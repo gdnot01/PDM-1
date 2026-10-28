@@ -1,4 +1,4 @@
-import { Text, View,Image,StyleSheet,Pressable } from "react-native";
+import { Text, View,Image,StyleSheet,TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { CALProduct} from "@/app/data/products";
 
@@ -24,20 +24,18 @@ export default function CALProductCard({CALproduct,}: CALProductCardProps) {
                 {CALproduct.priceCAL.toLocaleString("pt-BR", {style: "currency", currency: "BRL",})}
             </Text>
 
-
-      
-            <Pressable
-                style={styles.button}
-                onPress={() => CALrouter.push({
-                    pathname: "/products/[id]",
-                    params: {id: String(CALproduct.idCAL)},
-                    })
-                }>
-  <Text style={styles.buttonText}>
-    Ver detalhes
-  </Text>
-</Pressable>
-
+            <TouchableOpacity
+              style={styles.button}
+              activeOpacity={0.7}
+              onPress={() =>
+                CALrouter.push({
+                  pathname: "/products/[id]",
+                  params: {
+                    id: String(CALproduct.idCAL),},
+                })
+              }>
+              <Text style={styles.buttonText}> Ver detalhes </Text>
+            </TouchableOpacity>
         </View>
     )//fim do return
 
@@ -47,10 +45,12 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     backgroundColor: "#141419",
+    width: "100%",
+    margin: 6,
     padding: 10,
-    margin: 10,
-    borderRadius: 10,
-    elevation: 10,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "#292235",
   },
   image: {
     width: "100%",

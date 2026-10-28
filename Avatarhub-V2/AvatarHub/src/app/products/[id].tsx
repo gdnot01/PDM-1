@@ -7,7 +7,7 @@ export default function CALProductDetails() {
   const { id } = useLocalSearchParams<{ id: string; }>();
 
   const CALproduct = productsCAL.find(
-    (item) => item.idCAL === id );
+    (item) => item.idCAL === id ); //chama o produto pelo id
 
   if (!CALproduct) {
     return (

@@ -1,6 +1,9 @@
 import { View, Text, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
 
 export default function CartCAL() {
+  const CALrouter = useRouter();
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Meu Carrinho</Text>
