@@ -1,43 +1,51 @@
-import{ View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import { useRouter } from 'expo-router'
+import {View, Text, FlatList, StyleSheet,} from "react-native";
+import CALProductCard from "@/components/ProductCard";
+import {productsCAL } from "../data/products";
 
-export default function Index() {
-    const CALrouter = useRouter();
-
+//Backgound e logo
+export default function Home() {
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Index do Tabs</Text>
-            <TouchableOpacity 
-            style={styles.button}
-            onPress={() => CALrouter.push('')}//colocar Path
-            > {/*quando pressionado, ATIVA A FUNÇÃO E MUDA DE TELA, não presisa de parametro no back*/}
-                <Text>Ir</Text>
-            </TouchableOpacity>
-        </View>
-    )
+    <View style={styles.container}>
+      <Text style={styles.title}> AvatarHub </Text>
+
+      <Text style={styles.subtitle}> Nossos produtos </Text>
+
+      <FlatList
+        data={productsCAL}//productsCAL é o que coisa o array
+        keyExtractor={(item) => item.idCAL}
+        numColumns={1}
+        renderItem={({ item }) => (
+          <CALProductCard CALproduct={item} />
+        )}
+        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#6ec6e0",
-    },
-
-    title: {
-        fontSize: 20,
-        fontWeight: "bold",
-    },
-
-     button: {
-        backgroundColor: "#537580",
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: 10,
-    },
-
-
+  container: {
+    flex: 1,
+    backgroundColor: "#0B0B0E",
+    paddingTop: 50,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "condensedBold",
+    marginHorizontal: 115 ,
+    color: "#a78bfa"
+  },
+  subtitle: {
+    fontSize: 18,
+    marginHorizontal: 16,
+    marginTop: 8,
+    marginBottom: 10,
+    backgroundColor:"#8b5cf6",
+    color:"#f5f5f7"
+  },
+  list: {
+    paddingHorizontal: 50,
+    padding: 10
+  },
 });
