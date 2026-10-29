@@ -1,0 +1,411 @@
+
+/*
+  IMPORTAÇÕES:
+  Aqui importamos os componentes que serão usados
+  para construir a tela inicial do AvatarHub.
+*/
+
+import {
+  View,               // Organiza outros componentes na tela
+  Text,               // Exibe textos
+  FlatList,           // Exibe listas com rolagem
+  StyleSheet,         // Organiza os estilos da tela
+  Image,              // Exibe imagens
+  TouchableOpacity,   // Cria elementos clicáveis
+  TextInput,          // Permite digitar textos
+} from "react-native";
+
+// Importa o componente reutilizável que representa cada produto
+import CALProductCard from "@/components/ProductCard";
+
+// Importa a lista de produtos cadastrados localmente
+import { productsCAL } from "../data/products";
+
+// Importa ícones, como pesquisa, configurações e brilho
+import { Ionicons } from "@expo/vector-icons";
+
+// Permite navegar entre as telas do aplicativo
+import { useRouter } from "expo-router";
+
+// Permite criar e atualizar estados da tela
+import { useState } from "react";
+
+
+/*
+  COMPONENTE PRINCIPAL:
+  Esta função representa a tela inicial da loja.
+  O React Native renderiza os elementos retornados por ela.
+*/
+
+export default function HomeaCAL() {
+
+  /*
+    ESTADO DA PESQUISA:
+
+    buscaCAL guarda o texto digitado pelo usuário.
+    setBuscaCAL atualiza esse texto.
+
+    Quando o estado muda, a tela é atualizada automaticamente.
+  */
+
+  const [buscaCAL, setBuscaCAL] = useState("");
+
+  /*
+    NAVEGAÇÃO:
+
+    useRouter permite abrir outras telas do aplicativo.
+    CALrouter será usado, por exemplo, para abrir as configurações.
+  */
+
+  const CALrouter = useRouter();
+
+
+  /*
+    FILTRO DE PRODUTOS:
+
+    filter percorre os produtos e mantém somente aqueles
+    cujo nome contém o texto digitado na pesquisa.
+
+    toLowerCase deixa a comparação sem diferença entre
+    letras maiúsculas e minúsculas.
+
+    trim remove espaços extras no começo e no final.
+  */
+
+  const produtosFiltradosCAL = productsCAL.filter((produto) => {
+    const CALnome = String(produto.nameCAL ?? "");
+
+    return CALnome
+      .toLowerCase()
+      .includes(buscaCAL.trim().toLowerCase());
+  });
+
+
+  /*
+    RETURN:
+    Define a estrutura visual da tela.
+    Os componentes aparecem na ordem em que são escritos.
+  */
+
+  return (
+    <View style={styles.container}>
+
+      {/* HEADER: LOGO E NOME DO APLICATIVO */}
+
+      <View style={styles.header}>
+
+        {/* Agrupa a logo e o nome da marca */}
+        <View style={styles.brand}>
+
+          {/* Carrega a logo salva na pasta assets */}
+          <Image
+            source={require(
+              "../../../assets/images/avatarhub-logo-solo.png"
+            )}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+
+          {/* Agrupa o nome e o subtítulo da marca */}
+          <View style={styles.brandText}>
+
+            {/* Destaca a parte Hub com outra cor */}
+            <Text style={styles.brandName}>
+              Avatar
+              <Text style={styles.brandAccent}>Hub</Text>
+            </Text>
+
+            {/* Pequeno subtítulo abaixo do nome */}
+            <Text style={styles.brandSubtitle}>
+              DIGITAL COLLECTIBLES
+            </Text>
+
+          </View>
+        </View>
+
+
+        {/* BOTÃO DE CONFIGURAÇÕES */}
+
+        <TouchableOpacity
+          style={styles.settings}
+          activeOpacity={0.7}
+
+          // Ao tocar, tenta abrir a rota /settings
+          onPress={() => CALrouter.push("/settings")}
+        >
+          <Ionicons
+            name="settings-outline"
+            size={24}
+            color="#B58AFF"
+          />
+        </TouchableOpacity>
+
+      </View>
+      {/* FIM DO HEADER */}
+
+
+      {/* BARRA DE PESQUISA */}
+
+      <View style={styles.searchBar}>
+
+        {/* Ícone de lupa */}
+        <Ionicons
+          name="search-outline"
+          size={22}
+          color="#BDA5E8"
+        />
+
+        {/* Campo onde o usuário digita o nome do avatar */}
+        <TextInput
+          style={styles.input}
+          placeholder="Buscar avatares..."
+          placeholderTextColor="#A69BB8"
+
+          // Mostra o valor guardado no estado
+          value={buscaCAL}
+
+          // Atualiza o estado a cada alteração do texto
+          onChangeText={setBuscaCAL}
+
+          // Evita colocar a primeira letra automaticamente em maiúscula
+          autoCapitalize="none"
+        />
+
+
+        {/* BOTÃO DE FILTROS */}
+
+        <TouchableOpacity
+          style={styles.filterButton}
+          activeOpacity={0.7}
+          onPress={() => {
+            /*
+              Este botão ainda é apenas visual.
+              Posteriormente, podemos implementar um menu
+              para selecionar categorias de avatares.
+            */
+          }}
+        >
+          <Ionicons
+            name="options-outline"
+            size={23}
+            color="#FFFFFF"
+          />
+        </TouchableOpacity>
+
+      </View>
+      {/* FIM DA BARRA DE PESQUISA */}
+
+
+      {/* TÍTULO DA SEÇÃO DE PRODUTOS */}
+
+      <View style={styles.sectionHeader}>
+
+        <View>
+
+          <Text style={styles.title}>
+            Nossos produtos
+          </Text>
+
+          <Text style={styles.subtitle}>
+            Encontre seu próximo avatar digital
+          </Text>
+
+        </View>
+
+        {/* Ícone decorativo */}
+        <Ionicons
+          name="sparkles-outline"
+          size={23}
+          color="#A78BFA"
+        />
+
+      </View>
+      {/* FIM DO TÍTULO */}
+
+
+      {/* LISTA DE PRODUTOS */}
+
+      <FlatList
+
+        // Recebe os produtos que passaram pelo filtro de pesquisa
+        data={produtosFiltradosCAL}
+
+        // Usa o ID de cada produto como identificador único
+        keyExtractor={(item) => String(item.idCAL)}
+
+        // Exibe uma coluna de produtos
+        numColumns={1}
+
+        // Cria um ProductCard para cada produto da lista
+        renderItem={({ item }) => (
+          <CALProductCard CALproduct={item} />
+        )}
+
+        // Aplica os espaçamentos da lista
+        contentContainerStyle={styles.list}
+
+        // Esconde a barra lateral de rolagem
+        showsVerticalScrollIndicator={false}
+
+        // Permite interagir com a lista enquanto o teclado está aberto
+        keyboardShouldPersistTaps="handled"
+
+        // Mensagem mostrada quando nenhum produto corresponde à busca
+        ListEmptyComponent={
+          <Text style={styles.empty}>
+            Nenhum produto encontrado.
+          </Text>
+        }
+
+      />
+
+    </View>
+  );
+}
+
+
+/*
+  ESTILIZAÇÃO:
+
+  StyleSheet.create organiza os estilos em um único objeto.
+  Cada propriedade visual é aplicada por meio de style={styles.nome}.
+*/
+
+const styles = StyleSheet.create({
+
+  // Container que ocupa a tela e define o fundo
+  container: {
+    flex: 1,
+    backgroundColor: "#0B0912",
+    paddingTop: 18,
+  },
+
+  // Organiza logo e configurações na horizontal
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginHorizontal: 18,
+    marginBottom: 22,
+  },
+
+  // Agrupa logo e textos da marca
+  brand: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+
+  // Define o tamanho da logo
+  logo: {
+    width: 44,
+    height: 44,
+  },
+
+  // Cria espaço entre a logo e o texto
+  brandText: {
+    marginLeft: 10,
+  },
+
+  // Estilo principal do nome AvatarHub
+  brandName: {
+    color: "#FFFFFF",
+    fontSize: 23,
+    fontWeight: "bold",
+  },
+
+  // Cor roxa da palavra Hub
+  brandAccent: {
+    color: "#A78BFA",
+  },
+
+  // Estilo do subtítulo da marca
+  brandSubtitle: {
+    color: "#A69BB8",
+    fontSize: 9,
+    letterSpacing: 1.3,
+    marginTop: 3,
+  },
+
+  // Aparência circular do botão de configurações
+  settings: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#201B2E",
+    borderWidth: 1,
+    borderColor: "#38274F",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  // Aparência da barra de pesquisa
+  searchBar: {
+    height: 56,
+    marginHorizontal: 16,
+    paddingLeft: 14,
+    paddingRight: 6,
+    borderRadius: 17,
+    backgroundColor: "#201A2D",
+    borderWidth: 1,
+    borderColor: "#38274F",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  // Faz o campo de texto ocupar o espaço disponível
+  input: {
+    flex: 1,
+    color: "#FFFFFF",
+    fontSize: 14,
+    marginLeft: 10,
+  },
+
+  // Estilo do botão de filtros
+  filterButton: {
+    height: 44,
+    width: 44,
+    borderRadius: 13,
+    backgroundColor: "#8952F6",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  // Organiza o título e o ícone decorativo
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginHorizontal: 18,
+    marginTop: 26,
+    marginBottom: 14,
+  },
+
+  // Título Nossos produtos
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+  },
+
+  // Texto abaixo do título
+  subtitle: {
+    fontSize: 12,
+    color: "#A69BB8",
+    marginTop: 5,
+  },
+
+  // Espaçamento interno da lista
+  list: {
+    paddingHorizontal: 16,
+    paddingBottom: 24,
+  },
+
+  // Estilo da mensagem de lista vazia
+  empty: {
+    color: "#F5F5F7",
+    textAlign: "center",
+    marginTop: 30,
+  },
+
+});
