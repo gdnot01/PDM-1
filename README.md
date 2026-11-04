@@ -1,4 +1,4 @@
-# projeto-PDM-1
+# Projeto-PDM-1
 Turma: 2ºEM AB | Equipe 5
 
 **Participantes:**
